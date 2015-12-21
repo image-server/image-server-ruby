@@ -9,7 +9,7 @@ TODO: Delete this and the text above, and describe your gem
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'image-server-ruby'
+gem 'image-server'
 ```
 
 And then execute:
@@ -18,11 +18,17 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install image-server-ruby
+    $ gem install image-server
 
 ## Usage
 
-TODO: Write usage instructions here
+Call this method to modify defaults in your initializers.
+```ruby
+ImageServer.configure do |config|
+  config.logger = Rails.logger
+  config.upload_host = '127.0.0.1'
+end
+```
 
 ## Development
 
@@ -32,7 +38,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/image-server-ruby.
+Bug reports and pull requests are welcome on GitHub at https://github.com/image-server/image-server-ruby.
 
 
 ## License
