@@ -27,6 +27,19 @@ Call this method to modify defaults in your initializers.
 ImageServer.configure do |config|
   config.logger = Rails.logger
   config.upload_host = '127.0.0.1'
+  config.cdn_protocol = '//:'
+  config.cdn_host = 'example.com'
+  config.sharded_cdn_host = 'img-%d.example.com'
+  config.sharded_host_count = 3
+end
+```
+
+To prepare a model to use image server
+```ruby
+class AddImageHashToProducts < ActiveRecord::Migration
+  def change
+    add_column :products, :image_hash, :string, :limit => 32
+  end
 end
 ```
 
