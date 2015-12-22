@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'image/server/ruby/version'
+require 'image_server/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'image-server'
-  spec.version       = Image::Server::Ruby::VERSION
+  spec.version       = ImageServer::VERSION
   spec.authors       = ['Richard Millan']
   spec.email         = ['richardiux@gmail.com']
 
