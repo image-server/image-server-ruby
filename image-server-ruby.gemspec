@@ -9,8 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Richard Millan']
   spec.email         = ['richardiux@gmail.com']
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
+  spec.summary       = %q{ImageServer ruby client}
   spec.homepage      = 'https://github.com/wanelo/ruby_image_server'
   spec.license       = 'MIT'
 
