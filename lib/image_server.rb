@@ -2,6 +2,8 @@ require 'image_server/version'
 require_relative 'image_server/logger'
 require_relative 'image_server/configuration'
 require_relative 'image_server/uploader'
+require_relative 'image_server/image'
+require_relative 'image_server/url'
 
 module ImageServer
   class << self
