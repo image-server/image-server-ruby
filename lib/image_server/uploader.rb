@@ -27,13 +27,12 @@ module ImageServer
 
     def find_or_create_image_property(properties)
       attributes = {
-        width: properties[:width],
-        height: properties[:height],
+        width: properties['width'],
+        height: properties['height'],
         image_url: url,
         namespace: @namespace
       }
-
-      ip = ImageProperty.where(image_hash: properties[:hash]).first || ImageProperty.new(image_hash: properties[:hash])
+      ip = ImageProperty.where(image_hash: properties['hash'], namespace: @namespace).first || ImageProperty.new(image_hash: properties['hash'])
       ip.assign_attributes(attributes)
       ip.save!
       ip
@@ -45,7 +44,7 @@ module ImageServer
 
     def existing_image_property
       return unless url
-      @existing_image_property ||= ImageProperty.where('lower(image_url) = lower(?)', url).first
+      @existing_image_property ||= ImageProperty.where(namespace: @namespace).where('lower(image_url) = lower(?)', url).first
     end
 
     def source_is_url?
