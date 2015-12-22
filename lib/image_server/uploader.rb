@@ -2,10 +2,6 @@ require_relative 'adapters/http'
 
 module ImageServer
   class Uploader
-
-    class UploadError < StandardError;
-    end
-
     def initialize(namespace, source, outputs)
       @namespace = namespace
       @source = source
@@ -20,7 +16,7 @@ module ImageServer
 
       find_or_create_image_property(properties)
     rescue PermanentFailure => e
-      raise UploadError
+      raise UploadError.new(e.message)
     end
 
     private
