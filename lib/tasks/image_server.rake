@@ -28,7 +28,7 @@ namespace :image_server do
       end
 
       def installed_latest?
-        File.exist?('bin/images') && `bin/image-server --version`.split(' ').last.chomp == current_version
+        File.exist?('bin/images') && `bin/image --version`.split(' ').last.chomp == current_version
       rescue
         false
       end
