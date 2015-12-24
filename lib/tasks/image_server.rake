@@ -16,7 +16,7 @@ namespace :image_server do
       end
 
       def current_version
-        '1.14.0'
+        '1.15.0'
       end
 
       def executable_name
