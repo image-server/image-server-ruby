@@ -49,6 +49,12 @@ module ImageServer
               raise UploadError, response
           end
         end
+
+        private
+
+        def logger
+          @@logger ||= ImageServer::Logger.new
+        end
       end
 
       attr_reader :url
