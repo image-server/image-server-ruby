@@ -30,8 +30,8 @@ module ImageServer
 
     def kill_at_exit
       at_exit do
-        puts "image server is stopping"
-        Process.kill('TERM', pid)
+        puts 'image server is stopping'
+        `pkill -TERM -P #{pid}` # also stops child processes
       end
     end
 
@@ -47,7 +47,7 @@ module ImageServer
     def starting
       response = started?
       return false unless response
-      raise "Unable to start image server" unless response.kind_of?(Net::HTTPSuccess)
+      raise 'Unable to start image server' unless response.kind_of?(Net::HTTPSuccess)
       false
     rescue Errno::ECONNREFUSED
       true
