@@ -8,7 +8,7 @@ RSpec.describe ImageServer::Adapters::Http do
   let(:response_code) { 200 }
 
   before do
-    stub_request(:post, "http://#{ImageServer.configuration.upload_host}/p?outputs=full_size.jpg,x110-q90.jpg&source=http://example.com/image.url?a=1%26b=2").
+    stub_request(:post, "#{ImageServer.configuration.upload_host}/p?outputs=full_size.jpg,x110-q90.jpg&source=http://example.com/image.url?a=1%26b=2").
       to_return(status: response_code, body: response.to_json, headers: {})
   end
 
