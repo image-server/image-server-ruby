@@ -5,6 +5,7 @@ module ImageServer
     attr_accessor :logger
     attr_accessor :log_directory
     attr_writer   :upload_host
+    attr_accessor :path_to_binary
     attr_accessor :cdn_protocol
     attr_accessor :cdn_host
     attr_accessor :sharded_cdn_host
