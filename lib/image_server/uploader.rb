@@ -2,24 +2,32 @@ require_relative 'adapters/http'
 
 module ImageServer
   class Uploader
-    def initialize(namespace, source, outputs)
+    def initialize(namespace, source, outputs, configuration: ImageServer.configuration)
       @namespace = namespace
       @source = source
       @outputs = outputs
+      @configuration = configuration
     end
 
     def upload(force: false)
       return existing_image_property if existing_image_property && !force
+      uploader = Adapters::Http.new(@namespace, @source, configuration: @configuration)
+      properties_json = uploader.upload(uri)
 
-      uploader = Adapters::Http.new(@namespace, @source, @outputs)
-      properties = uploader.upload
-
-      find_or_create_image_property(properties)
+      find_or_create_image_property(properties_json)
     rescue PermanentFailure => e
       raise UploadError.new(e.message)
     end
 
     private
+
+    def uri
+      uri = URI.parse("#{@configuration.upload_host}/#{@namespace}")
+      params = {outputs: @outputs}
+      params[:source] = url if source_is_url?
+      uri.query = URI.encode_www_form(params)
+      uri
+    end
 
     def find_or_create_image_property(properties)
       attributes = {

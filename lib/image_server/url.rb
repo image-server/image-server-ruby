@@ -1,3 +1,5 @@
+require_relative 'path'
+
 module ImageServer
   class Url
     # Pregenerated images
@@ -5,8 +7,8 @@ module ImageServer
     def self.from_hash(namespace, image_hash, size: 'full_size', format: 'jpg', protocol: ImageServer.configuration.cdn_protocol, domain: nil, processing: false)
       return if image_hash.to_s.empty?
       domain ||= self.domain(image_hash)
-
-      url = "#{protocol}#{domain}/#{namespace}/#{image_hash[0..2]}/#{image_hash[3..5]}/#{image_hash[6..8]}/#{image_hash[9..-1]}/#{size}"
+      directory_path = Path.directory_path(namespace, image_hash)
+      url = "#{protocol}#{domain}/#{directory_path}/#{size}"
       url += ".#{format}" unless size.to_s == 'original'
       url += '?processing' if processing
       url

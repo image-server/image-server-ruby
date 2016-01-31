@@ -1,103 +1,42 @@
 require 'net/http'
 require 'uri'
 require_relative '../logger'
+require_relative 'http/error_handler'
 
 module ImageServer
-  class PermanentFailure < StandardError; end
-  class TemporaryFailure < StandardError; end
-
-  class ImageServerUnavailable < TemporaryFailure; end
-  class StoreConcurrencyExceeded < TemporaryFailure; end
-
-  class UploadError < PermanentFailure; end
-  class SourceNotFound < PermanentFailure; end
-  class InvalidSource < PermanentFailure; end
-  class Blocked < PermanentFailure; end
-  class ConnectionFailure < PermanentFailure; end
-
   module Adapters
     class Http
-      class ErrorHandler
-        attr_reader :response
-
-        def initialize(http_response)
-          @response = http_response
-        end
-
-        def handle_errors!
-          case response
-            when Net::HTTPOK
-            when Net::HTTPServiceUnavailable, Net::HTTPGatewayTimeOut
-              raise ImageServerUnavailable
-            when Net::HTTPNotFound
-              error = JSON.parse(response.body)['error']
-              if error.start_with?('Unable to download image') || error.start_with?('File is empty')
-                raise SourceNotFound, error
-              elsif error.end_with?('i/o timeout')
-                raise Blocked, error
-              elsif error.start_with?('ImageMagick failed')
-                raise InvalidSource, error
-              elsif error.include?('dial tcp')
-                raise ConnectionFailure, error
-              else
-                # generic case, let's log the error so we can add it later
-                # but we consider this a permanent error so tht we don't block processing.
-                logger.error "error uploading, but error was not recognized: #{error.inspect}"
-                raise UploadError, error
-              end
-            else
-              raise UploadError, response
-          end
-        end
-
-        private
-
-        def logger
-          @@logger ||= ImageServer::Logger.new
-        end
-      end
-
       attr_reader :url
 
-      def initialize(namespace, source, outputs)
+      def initialize(namespace, source, configuration: ImageServer.configuration)
         @namespace = namespace
         @source = source
-        @outputs = outputs
+        @configuration = configuration
       end
 
-      def upload
-        uri = URI.parse("#{server_url}/#{@namespace}")
+      def upload(upload_uri)
+        logger.info "ImageServer::Adapters::Http --> uploading to image server: [#{upload_uri}]"
 
-        logger.info "ImageServer::Adapters::Http --> uploading to image server: [#{uri}]"
+        response = Net::HTTP.start(upload_uri.host, upload_uri.port) do |http|
 
-        params = {outputs: @outputs}
-        params[:source] = url if source_is_url?
-
-        uri.query = URI.encode_www_form(params)
-
-        response = Net::HTTP.start(uri.host, uri.port) do |http|
           http.read_timeout = 60
           body = if source_is_url?
             '{}' # blank body
-          elsif @source.class == File
+          elsif @source.is_a?(File)
             @source
-          elsif Object.const_defined?('ActionDispatch::Http::UploadedFile') && @source.class == ActionDispatch::Http::UploadedFile
+          elsif @source.respond_to?(:path)
             File.open(@source.path).read
+          else
+            raise('Not supported')
           end
 
-          http.post("#{uri.path}?#{uri.query}", body)
+          http.post("#{upload_uri.path}?#{upload_uri.query}", body)
         end
 
         ErrorHandler.new(response).handle_errors!
         @body = JSON.parse(response.body)
-      end
-
-      def server_url
-        @server_url ||= begin
-          url = ImageServer.configuration.upload_host
-          url = "http://#{url}" unless url.start_with?('http')
-          url
-        end
+      rescue Errno::ECONNREFUSED => e
+        raise ImageServerUnavailable
       end
 
       def valid?
@@ -122,17 +61,10 @@ module ImageServer
         @@logger ||= ImageServer::Logger.new
       end
 
-      def url
-        return unless source_is_url?
-        @url ||= begin
-          @url = @source
-          @url = "http:#{@url}" if @url.start_with?('//')
-          @url
-        end
-      end
-
       def source_is_url?
-        @source.is_a?(String) && (@source.start_with?('http') || @source.start_with?('//'))
+        return false unless @source.is_a?(String)
+
+        @source.start_with?('http') || @source.start_with?('//')
       end
 
     end

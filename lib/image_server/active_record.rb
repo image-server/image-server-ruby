@@ -41,6 +41,11 @@ module ImageServer
           #{column}.url(*attrs).to_s
         end
 
+        def upload_#{column}_attachment(name, file)
+          uploader = ::ImageServer::AttachmentUploader.new(#{namespace_constant}, #{column}_hash)
+          uploader.upload(name, file)
+        end
+
         private
 
         def #{column}_cdn_protocol

@@ -4,13 +4,13 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'image_server/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'image-server'
+  spec.name          = 'image_server'
   spec.version       = ImageServer::VERSION
   spec.authors       = ['Richard Millan']
   spec.email         = ['richardiux@gmail.com']
 
   spec.summary       = %q{ImageServer ruby client}
-  spec.homepage      = 'https://github.com/wanelo/ruby_image_server'
+  spec.homepage      = 'https://github.com/image-server/ruby_image_server'
   spec.license       = 'MIT'
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
