@@ -30,14 +30,16 @@ module ImageServer
 
     def kill_at_exit
       at_exit do
-        puts 'image server is stopping'
-        `pkill -TERM -P #{pid}` # also stops child processes
+        if pid
+          logger.info 'image server is stopping'
+          `pkill -TERM -P #{pid}` # also stops child processes
+        end
       end
     end
 
     def give_feedback
-      puts "image server is starting on port #{configuration.port}..." while starting
-      puts "image server took #{seconds} seconds to start"
+      logger.info("image server is starting on port #{configuration.port}...") while starting
+      logger.info "image server took #{seconds} seconds to start"
     end
 
     def seconds
