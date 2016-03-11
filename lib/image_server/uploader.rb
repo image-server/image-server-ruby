@@ -30,6 +30,7 @@ module ImageServer
     end
 
     def find_or_create_image_property(properties)
+      return unless url
       attributes = {
         width: properties['width'],
         height: properties['height'],
