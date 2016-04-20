@@ -18,9 +18,10 @@ module ImageServer
         logger.info "ImageServer::Adapters::Http --> uploading to image server: [#{upload_uri}]"
 
         response = Net::HTTP.start(upload_uri.host, upload_uri.port) do |http|
-
-          http.read_timeout = 60
-          body = if source_is_url?
+          request = Net::HTTP::Post.new(upload_uri.request_uri)
+          request['Accept'] = "application/json"
+          request['Content-Type'] = "application/json"
+          request.body = if source_is_url?
             '{}' # blank body
           elsif @source.is_a?(File)
             @source
@@ -30,7 +31,8 @@ module ImageServer
             raise('Not supported')
           end
 
-          http.post("#{upload_uri.path}?#{upload_uri.query}", body)
+          http.read_timeout = 60
+          http.request(request)
         end
 
         ErrorHandler.new(response).handle_errors!
