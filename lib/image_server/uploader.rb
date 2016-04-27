@@ -34,7 +34,7 @@ module ImageServer
       attributes = {
         width: properties['width'],
         height: properties['height'],
-        image_url: url,
+        image_url: url.downcase,
         namespace: @namespace
       }
       ip = ImageProperty.where(image_hash: properties['hash'], namespace: @namespace).first || ImageProperty.new(image_hash: properties['hash'])
@@ -49,7 +49,7 @@ module ImageServer
 
     def existing_image_property
       return unless url
-      @existing_image_property ||= ImageProperty.where(namespace: @namespace).where('lower(image_url) = lower(?)', url).first
+      @existing_image_property ||= ImageProperty.where(namespace: @namespace).where('image_url = ?', url.downcase).first
     end
 
     def source_is_url?
