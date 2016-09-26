@@ -29,7 +29,8 @@ RSpec.describe ImageServer::Uploader do
 
         expect_any_instance_of(ImageProperty).to receive(:save!)
 
-        uploader.upload
+        properties = uploader.upload
+        expect(properties).to be_a(ImageProperty)
 
         expect(a_request(:post, 'http://127.0.0.1:7000/img?outputs=full_size&source=http://my_image.png')).
           to have_been_made
@@ -46,9 +47,10 @@ RSpec.describe ImageServer::Uploader do
         file = Tempfile.new('foo')
         uploader = ImageServer::Uploader.new('img', file, 'full_size')
 
-        expect_any_instance_of(ImageProperty).to_not receive(:save!)
+        expect_any_instance_of(ImageProperty).to receive(:save!)
 
-        uploader.upload
+        properties = uploader.upload
+        expect(properties).to be_a(ImageProperty)
 
         expect(a_request(:post, 'http://127.0.0.1:7000/img?outputs=full_size')).
           to have_been_made

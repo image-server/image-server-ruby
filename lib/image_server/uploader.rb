@@ -30,11 +30,10 @@ module ImageServer
     end
 
     def find_or_create_image_property(properties)
-      return unless url
       attributes = {
         width: properties['width'],
         height: properties['height'],
-        image_url: url.downcase,
+        image_url: (url.downcase if url),
         namespace: @namespace
       }
       ip = ImageProperty.where(image_hash: properties['hash'], namespace: @namespace).first || ImageProperty.new(image_hash: properties['hash'])

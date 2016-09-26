@@ -22,10 +22,14 @@ module ImageServer
         #{processing_versions_constant} = #{processing_versions}
         #{sharded_cdn_template_constant} = #{sharded_cdn_template}
 
-        def remote_#{column}_url=(url)
-          uploader = ImageServer::Uploader.new(#{namespace_constant}, url, #{outputs_constant})
+        def #{column}=(source)
+          uploader = ImageServer::Uploader.new(#{namespace_constant}, source, #{outputs_constant})
           image_property = uploader.upload
           self.#{column}_hash = image_property.image_hash
+        end
+
+        def remote_#{column}_url=(url)
+          self.#{column} = url
         end
 
         def #{column}(options={})
