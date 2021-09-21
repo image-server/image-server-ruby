@@ -37,7 +37,7 @@ module ImageServer
     end
 
     def current_version
-      '1.17.1'
+      '1.18.0'
     end
 
     def executable_name
