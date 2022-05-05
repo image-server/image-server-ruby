@@ -1,0 +1,19 @@
+version: '3.2'
+services:
+  app:
+    build:
+      context: .
+      args:
+        - "BUNDLE_GITHUB__COM=$PRONTO_GITHUB_ACCESS_TOKEN"
+    volumes:
+      - ./artifacts:/usr/src/app/artifacts
+    environment:
+      # buildkite
+      CI:
+      BUILDKITE_PARALLEL_JOB:
+      BUILDKITE_PARALLEL_JOB_COUNT:
+      BUILDKITE_COMMIT:
+      BUILDKITE_BRANCH:
+      BUILDKITE_REPO:
+      BUILDKITE_BUILD_ID:
+      BUILDKITE_BUILD_NUMBER:
