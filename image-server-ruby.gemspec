@@ -27,9 +27,9 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
   spec.required_ruby_version = '>= 2.7.6'
 
-  spec.add_development_dependency 'pry'
+  spec.add_development_dependency 'pry', '~> 0.14.1'
   spec.add_development_dependency 'bundler', '~> 2.1.4'
-  spec.add_development_dependency 'rake', '~> 10.0'
-  spec.add_development_dependency 'rspec', '~> 3.0'
+  spec.add_development_dependency 'rake', '~> 13.0.6'
+  spec.add_development_dependency 'rspec', '~> 3.11.0'
   spec.add_development_dependency 'webmock', '~> 3.14.0'
 end
