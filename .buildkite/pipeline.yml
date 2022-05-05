@@ -1,0 +1,19 @@
+steps:
+  - label: ":rspec: RSpec"
+    artifact_paths: "artifacts/*"
+    plugins:
+      docker-compose#v3.0.2:
+        config: "docker-compose.tests.yml"
+        propagate-environment: true
+        mount-buildkite-agent: true
+        volumes:
+          - ${BUILDKITE_AGENT_BINARY_PATH:-/usr/bin/buildkite-agent}:/usr/bin/buildkite-agent
+        environment:
+          - BUILDKITE
+          - BUILDKITE_BUILD_ID
+          - BUILDKITE_JOB_ID
+          - BUILDKITE_AGENT_ACCESS_TOKEN
+        run: "app"
+    timeout_in_minutes: 10
+    agents:
+      queue: "ruby-tests"
