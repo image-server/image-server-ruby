@@ -45,7 +45,7 @@ module ImageServer
     end
 
     def remote_url
-      "https://github.com/image-server/image-server/releases/download/v#{current_version}/#{executable_name}"
+      "https://github.com/returnly/image-server/releases/download/v#{current_version}/#{executable_name}"
     end
 
     def installed_latest?
