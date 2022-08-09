@@ -39,7 +39,7 @@ module ImageServer
                       format: '#{default_format}',
                       processing: #{column}_processing?,
                       object: self }
-          ImageServer::Image.new(#{namespace_constant}, #{column}_hash, default_options.merge(options))
+          ImageServer::Image.new(#{namespace_constant}, #{column}_hash, **default_options.merge(options))
         end
 
         def #{column}_url(*attrs)
